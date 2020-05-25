@@ -1,5 +1,5 @@
 const Restaurant = require("../models/restaurant.js")
-const db = require("../db")
+const db = require("../config/db.js")
 
  exports.getAll = (req,res) =>{
     Restaurant.getAll((err,data)=>{
