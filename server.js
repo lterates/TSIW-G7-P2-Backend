@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const db = require("./config/db.js")
 
 const app = express();
 
@@ -8,9 +9,13 @@ app.use(bodyParser.json());
 
 // parse requests of content-type: application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-module.exports= app;
+module.exports= app;  
 require("./routes/restaurant.js")(app)
+require("./routes/plate.js")(app)
+require("./routes/reservation")(app)
+require("./routes/user.js")(app)
 
 
 

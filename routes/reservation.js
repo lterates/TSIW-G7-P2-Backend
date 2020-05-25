@@ -1,8 +1,5 @@
 module.exports = app =>{
-<<<<<<< HEAD
-=======
     
->>>>>>> 740bb99... prog
     const reservation = require("../controllers/reservation.js")
 
    // app.get('/reservations/:idReservation', reservation.findById)
