@@ -62,16 +62,16 @@ function sendSignUpMail(res,email){
             var transporter = nodemailer.createTransport({
                 service:'gmail',
                 auth:{
-                    user:'devjohnwink@gmail.com',
-                    pass:'googleSiOl920092.'
+                    user:'user@gmail.com',
+                    pass:'user.'
                 }
             })
 
             var mailOptions = {
-                from:'devjohnwink@gmail.com',
+                from:'user@gmail.com',
                 to:email,
-                subject:"Registo MealSet",
-                html:'<h1>Obrigado registar no MealSet! Por favor confirme a sua conta clicando no link abaixo!</h1><a href="http://localhost:3000/confirm/'+token+'"><H2>Clique aqui!</H2></a>'
+                subject:"Registo is2go",
+                html:'<h1>Por favor confirme a sua conta no link abaixo!</h1><a href="http://localhost:3000/confirm/'+token+'"><H2>Clique aqui!</H2></a>'
             }
 
             transporter.sendMail(mailOptions,function(err,info){
@@ -299,14 +299,12 @@ exports.update = (req,res) =>{
     }
     else{
         const contact = req.body.contact;
-        const avatar = req.body.avatar;
-        const diet = db.con.escape(req.body.diet);
+        const avatar = req.body.avatar;        
         const idUser = req.params.idUser
 
         let user={
             contact:contact,
-            avatar: avatar,
-            diet: diet
+            avatar: avatar,          
         }
             
         User.update(user,idUser,(err,data)=>{
@@ -326,117 +324,5 @@ exports.update = (req,res) =>{
             }
         }) 
     }
-
-}
-
-exports.newPassword = (req,res)=>{
-    if(!req.body){
-        res.status(400).send({message:"Content cannot be empty"})
-    }else{
-        const idUser = req.params.idUser
-        const password = db.con.escape(req.body.password)
-        const newPassword = db.con.escape(req.body.newPassword)
-        let email = ""
-
-
-
-        User.findAll((err,data)=>{
-            if(err){
-                if(err.kind==="not_found"){
-                    res.status(404).send({"not found": "Nenhum utilizador foi encontrado"})
-                }else{
-                    res.status(500).send({message:err.message || "Ocorreu um erro"})
-                }
-            }else{
-
-                let found = false
-                let errorMessage = ""
-
-                data.find((data)=>{
-              
-                    if(data.idUser == idUser && bcrypt.compareSync(password,data.password)){
-
-                        found = true
-                        email = data.email
-                      
-                    }
-                })
-
-              
-                if(found == true){
-                    var token = jwt.sign({id:idUser}, config.secret, {
-                        expiresIn: new Date().getTime() + 10 * 60 * 1000 // expires in 10 min
-                    });
-            
-                    var transporter = nodemailer.createTransport({
-                        service:'gmail',
-                        auth:{
-                            user:'devjohnwink@gmail.com',
-                            pass:'googleSiOl920092.'
-                        }
-                    })
-            
-                    var mailOptions = {
-                        from:'devjohnwink@gmail.com',
-                        to:email,
-                        subject:"Confirmar nova password",
-                        html:'<h1>Por favor confirme a sua nova password clicando no link abaixo!</h1><a href="http://localhost:3000/confirm/'+token+'/'+newPassword+'"><H2>Clique aqui!</H2></a>'
-                    }
-            
-                    transporter.sendMail(mailOptions,function(err,info){
-                        if(err){
-                            console.log(err);
-                            res.status(500).send({message:err.message || "Ocorreu um erro"})
-                        }else{
-                            console.log('Message sent: ' + info.response);
-                            return res.status(200).send({"success": "Por favor verifique o seu email para confirmar a sua nova password."});
-                        }
-                    })
-                }else{
-                    res.status(401).send({ auth: false, token: null, message:"A password é  inválida" });
-                }
-            }
-        })
-
-       
-
-    }
-   
-}
-
-exports.passwordUpdate = (req,res) =>{
-
-    const token = req.params.token
-    const password = db.con.escape(req.params.password)
-
-    var data = jwt.decode(token,config.secret);
-
-    console.log(data)
-    console.log(new Date(data.exp));
-    console.log(new Date());
-
-    if(new Date(data.exp)> new Date()){
-        
-            console.log("user found");
-
-            User.updatePassword(data.id,password,(err,result)=>{
-                if(err){
-                    if(err.kind==="not_found"){
-                        res.status(404).send({"not found": "O utilizador não foi encontrado"})
-                    }
-                    else{
-                        res.status(500).send({message:err.message || "Ocorreu um erro"})
-                    }
-                }else{
-                    res.status(200).send({"success":"A nova password foi introduzida com êxito"})
-                }
-
-            })
-        
-    }else{
-        console.log("Link is expired");
-        res.status(401).send({"Expired":"O token passou o prazo de validade"})
-    }
-
 
 }
