@@ -3,9 +3,9 @@ const db = require("../config/db.js")
 //Constructor
 const Restaurant = function (restaurant) {
     this.nome = restaurant.name
-    this.descrição = restaurant.description   
+    this.descrição = restaurant.description
     this.coverFoto = restaurant.coverFoto
-  //  this.gps = restaurant.gps
+    //  this.gps = restaurant.gps
     this.morada = restaurant.address
     this.Codigo_postal = restaurant.zipCode
     this.ativo = restaurant.active
@@ -19,14 +19,12 @@ Restaurant.getAll = result => {
             console.log(err)
             result(err, null)
             return
-        
-        }
 
-        else if(!res[0]){
-            result({kind:"not_found"},null)
-        }
-
-        else {
+        } else if (!res[0]) {
+            result({
+                kind: "not_found"
+            }, null)
+        } else {
 
             console.log("Restaurants: ", res)
             result(null, res)
@@ -46,38 +44,40 @@ Restaurant.findById = (restaurantId, result) => {
         if (err) {
             console.log("error:", err)
             return result(err, null)
-           
+
         }
         // If there's no restaurant found
         else if (!res[0]) {
-            return result({ kind: "not_found" }, null)
-            
-            
+            return result({
+                kind: "not_found"
+            }, null)
+
+
         }
         // If there's the found Restaurant
         else {
             return result(null, res[0])
-            
+
         }
     })
 
 }
 
-Restaurant.getLastId = (result) =>{
+Restaurant.getLastId = (result) => {
 
-    db.con.query("SELECT Max(idRestaurante) as idRestaurante FROM Restaurante",(err,res)=>{
-        if(err){
+    db.con.query("SELECT Max(idRestaurante) as idRestaurante FROM Restaurante", (err, res) => {
+        if (err) {
             console.log("error:", err)
             return result(err, null)
-        }
-        else if(!res[0]){
-            return result({ kind: "not_found" }, null)
-        }
-        else{
+        } else if (!res[0]) {
+            return result({
+                kind: "not_found"
+            }, null)
+        } else {
             return result(null, res[0])
         }
     })
-    
+
 }
 
 
@@ -94,40 +94,42 @@ Restaurant.create = (newRestaurant, result) => {
         }
     })
 
-    
+
 }
 
 
-Restaurant.confirm = (id,result) =>{
-    db.con.query('UPDATE Restaurant SET ativo = 1 WHERE idRestaurante = ? and ativo = 0',id,(err,res)=>{
-        if(err){
+Restaurant.confirm = (id, result) => {
+    db.con.query('UPDATE Restaurant SET ativo = 1 WHERE idRestaurante = ? and ativo = 0', id, (err, res) => {
+        if (err) {
             console.log("error:", err);
-            return result(err,null)
+            return result(err, null)
         }
         //If no row has been affected/changed, an error will occur
-        else if(res.affectedRows == 0){
-            return result({kind:"not_found"},null)
-        }else{
-            return result(null,"Restaurante confirmado")
+        else if (res.affectedRows == 0) {
+            return result({
+                kind: "not_found"
+            }, null)
+        } else {
+            return result(null, "Restaurante confirmado")
         }
     })
 }
 
-Restaurant.delete = (id,result) =>{
-    
-            db.con.query("UPDATE Restaurante SET ativo = 0 WHERE idRestaurante = ? AND ativo = 1",id,(err,res)=>{
-                if(err){
-                    console.log("error:", err);
-                   return  result(err,null)
-                }
-                else if(res.affectedRows == 0){
-                   return result({kind:"not_found"},null)
-                }
-                else{
-                    console.log("Restaurante Apagado")
-                    return result(null,"Removido com sucesso")
-                }
-            })
+Restaurant.delete = (id, result) => {
+
+    db.con.query("UPDATE Restaurante SET ativo = 0 WHERE idRestaurante = ? AND ativo = 1", id, (err, res) => {
+        if (err) {
+            console.log("error:", err);
+            return result(err, null)
+        } else if (res.affectedRows == 0) {
+            return result({
+                kind: "not_found"
+            }, null)
+        } else {
+            console.log("Restaurante Apagado")
+            return result(null, "Removido com sucesso")
+        }
+    })
 }
 
 module.exports = Restaurant

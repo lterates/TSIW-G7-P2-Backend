@@ -1,4 +1,4 @@
-module.exports = app =>{
+module.exports = app => {
     const reservation = require("../controllers/reservation.js")
 
     app.get('/reservations/:idReservation', reservation.findById)
@@ -9,7 +9,7 @@ module.exports = app =>{
 
     app.post('/tables/:idTable/users/:idUser/reservations', reservation.create)
 
-    app.put('/reservations/:idReservation/confirm',reservation.confirm)
+    app.put('/reservations/:idReservation/confirm', reservation.confirm)
 
     app.delete('/reservations/:idReservation', reservation.deleteById)
 

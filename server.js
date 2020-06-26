@@ -8,10 +8,12 @@ const app = express();
 app.use(bodyParser.json());
 
 // parse requests of content-type: application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(bodyParser.json());
 
-module.exports= app;  
+module.exports = app;
 require("./routes/restaurant.js")(app)
 require("./routes/plate.js")(app)
 require("./routes/reservation")(app)
@@ -21,15 +23,17 @@ require("./routes/user.js")(app)
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to your application." });
+  res.json({
+    message: "Welcome to your application."
+  });
 });
 
 let port = process.env.PORT
 
-if(port == null||port ==""){
+if (port == null || port == "") {
   port = 3000
 }
-app.listen(port,function(){
+app.listen(port, function () {
   console.log("Server running at port", port)
 })
 
