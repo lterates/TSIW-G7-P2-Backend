@@ -1,12 +1,11 @@
 const mysql = require("mysql");
 
-
 module.exports={
     mysql,
     con: mysql.createConnection({
-        host:"sql7.freemysqlhosting.net:3306",
-        user: "sql7343069",
-        password: "Kaz1ec7cZR", 
-        database: `sql7343069`
+        host:"localhost:3306",
+        user: "root",
+        password: "toma1502", 
+        database: `is2go`
     })
 }

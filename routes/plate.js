@@ -1,16 +1,16 @@
 module.exports = app => {
 
-    const plate = require("../controllers/plate.js")
+    const plate = require("../controllers/plate.js")   
 
-    // app.get('/plates', plate.getAll)
+    app.get('/plates', plate.getAll)
 
-    // app.get('/plates/:idPlate', plate.findById)
+    app.get('/plates/:idPlate', plate.findById)
 
-    // app.put('/plates/:idPlate',plate.update)
+    app.get('/restaurants/:idRestaurant/plates' , plate.findByRestaurant) 
 
-    // app.post('/restaurants/:idRestaurant/plates', plate.create)
+    app.post('/restaurants/:idRestaurant/plates', plate.create)
 
-    // app.delete("/plates/:idPlate", plate.delete);
+    app.delete("/plates/:idPlate", plate.delete);
 
-    // app.delete("/restaurants/:idRestaurant/plates", plate.deleteAll);
+    app.delete("/restaurants/:idRestaurant/plates", plate.deleteAll);
 }

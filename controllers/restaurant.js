@@ -133,51 +133,6 @@ exports.confirm = (req,res)=>{
 }
 
 
-exports.update = (req, res) => {
-    //validate request
-    if (!req.body) {
-        res.status(400).send({
-            message: "Content Can't be empty!"
-        })
-    } else {
-
-        const name = db.con.escape(req.body.name)
-        const description = db.con.escape(req.body.description)
-        const foto = req.body.foto
-        // const gps = db.con.escape(req.body.gps)
-        // const address = db.con.escape(req.body.address)
-        const zipCode = req.body.zipCode
-        const idRestaurant = req.params.idRestaurant
-
-        const restaurant = new Restaurant({
-            name: name,
-            description: description,
-            foto: foto,
-            // gpsAdress: gps,
-            // address: address,
-            zipCode: zipCode
-        })
-
-        Restaurant.update(idRestaurant, restaurant, (err, data) => {
-            if (err) {
-                if (err.kind === "not_found") {
-                    res.status(404).send({
-                        "Not found": "Nenhum restaurante encontrado"
-                    })
-                } else {
-                    res.status(500).send({
-                        message: err.message || "Ocorreu um erro"
-                    })
-                }
-            } else {
-                res.status(200).send({
-                    "success": "Restaurante Atualizado com sucesso"
-                })
-            }
-        })
-    }
-}
-
 exports.delete = (req, res) => {
 
     const idRestaurant = req.params.idRestaurant

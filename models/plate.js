@@ -34,7 +34,7 @@ Plate.getAll = result => {
 // Gets ONE Selected plate from Database
 Plate.findById = (plateId, result) => {
     console.log("ID DO PRATO: " + plateId)
-    //Send prepared command to Database
+   
     db.con.query("SELECT * FROM Prato WHERE idPrato = ? AND ativo = 1", plateId, (err, res) => {
 
         // If there's any problem with the data retrieval 
@@ -56,6 +56,29 @@ Plate.findById = (plateId, result) => {
     })
 
 }
+
+Plate.findByRestaurant =(idRestaurant,result) =>{
+    db.con.query("SELECT * FROM Prato WHERE idRestaurante = ? AND ativo = 1", idRestaurant, (err, res) => {
+
+        // If there's any problem with the data retrieval 
+        if (err) {
+            console.log("error:", err)
+            result(err, null)
+            return
+        }
+        // If there's the found plate
+        else if (res[0]) {
+            result(null, res[0])
+            return
+        }
+        // If there's no plate found
+        else {
+            result({ kind: "not_found" }, null)
+            return
+        }
+    }) 
+}
+
 
 Plate.create = (newPlate, result) => {
     //Preparing to add new plate Database
@@ -110,21 +133,5 @@ Plate.deleteAll = (idRestaurant,result) => {
      
     });
   };
-
-  Plate.update=(id, plate,result)=>{
-      db.con.query("UPDATE Prato SET nome=?,descrição=?,foto=? WHERE idPrato = ? AND ativo = 1",
-      [plate.nome, plate.descrição, plate.foto,id],
-      (err,res)=>{
-          if(err){
-              result(err,null)
-          }
-          else if(res.affectedRows == 0){
-              result({kind:"not_found"}, null)
-          }
-          else{
-              result(null,{plate})
-          }
-      })
-  }
 
 module.exports = Plate

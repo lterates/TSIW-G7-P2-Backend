@@ -83,37 +83,4 @@ User.confirm = (idUser,result)=>{
     })
 }
 
-User.update = (user,idUser,result)=>{
-    db.con.query("UPDATE User SET contacto = ?, photo = ? , dieta = ?  WHERE idUser = ? AND ativo = 1",
-    [user.contact,user.photo, user.diet,idUser],(err,res)=>{
-        if(err){
-
-            console.log("error:", err)
-            return result(err,null)
-
-        }else if(res.affectedRows == 0){
-            return result({kind:"not_found"},null)
-
-        }else{
-            return result(null,res)
-        }
-    })
-}
-
-User.updatePassword = (idUser,newPassword,result)=>{
-    db.con.query("UPDATE User SET password = ? WHERE idUser = ? AND ativo = 1", [newPassword,idUser],(err,res)=>{
-        if(err){
-
-            console.log("error:", err)
-            return result(err,null)
-
-        }else if(res.affectedRows == 0){
-            return result({kind:"not_found"},null)
-
-        }else{
-            return result(null,res)
-        }
-    })
-}
-
 module.exports = User

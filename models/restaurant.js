@@ -4,10 +4,11 @@ const db = require("../config/db.js")
 const Restaurant = function (restaurant) {
     this.nome = restaurant.name
     this.descrição = restaurant.description   
-    this.coverFoto = restaurant.foto
-    this.gps = restaurant.gpsAddress
+    this.coverFoto = restaurant.coverFoto
+  //  this.gps = restaurant.gps
     this.morada = restaurant.address
     this.Codigo_postal = restaurant.zipCode
+    this.ativo = restaurant.active
 
 }
 // Gets All restaurants from Database
@@ -62,6 +63,24 @@ Restaurant.findById = (restaurantId, result) => {
 
 }
 
+Restaurant.getLastId = (result) =>{
+
+    db.con.query("SELECT Max(idRestaurante) as idRestaurante FROM Restaurante",(err,res)=>{
+        if(err){
+            console.log("error:", err)
+            return result(err, null)
+        }
+        else if(!res[0]){
+            return result({ kind: "not_found" }, null)
+        }
+        else{
+            return result(null, res[0])
+        }
+    })
+    
+}
+
+
 Restaurant.create = (newRestaurant, result) => {
     //Preparing to add new restaurant Database
     db.con.query("INSERT INTO Restaurante SET ?", newRestaurant, (err, res) => {
@@ -78,11 +97,9 @@ Restaurant.create = (newRestaurant, result) => {
     
 }
 
-Restaurant.update = (id,restaurantInfo,result) =>{
 
-    db.con.query("UPDATE Restaurante SET nome=?, descrição=?, estacionamento=?, coverFoto=?, gps=?, morada=?, Codigo_postal=? WHERE idRestaurante=? AND ativo = 1",
-    [restaurantInfo.nome, restaurantInfo.descrição, restaurantInfo.coverFoto,restaurantInfo.gps, restaurantInfo.morada,restaurantInfo.Codigo_postal,id],
-    (err,res)=>{
+Restaurant.confirm = (id,result) =>{
+    db.con.query('UPDATE Restaurant SET ativo = 1 WHERE idRestaurante = ? and ativo = 0',id,(err,res)=>{
         if(err){
             console.log("error:", err);
             return result(err,null)
@@ -91,7 +108,7 @@ Restaurant.update = (id,restaurantInfo,result) =>{
         else if(res.affectedRows == 0){
             return result({kind:"not_found"},null)
         }else{
-            return result(null,"Restaurante Atualizado")
+            return result(null,"Restaurante confirmado")
         }
     })
 }

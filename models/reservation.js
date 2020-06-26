@@ -68,24 +68,6 @@ Reservation.create = (newReservation,result)=>{
     })
 }
 
-Reservation.update = (idReservation,newReservation,result)=>{
-    db.con.query("UPDATE Reserva SET nome = ?, horario = ?, n_pessoas = ? WHERE idReserva = ? AND ativo = 1",
-    [newReservation.nome, newReservation.horario, newReservation.n_pessoas,idReservation],
-    (err,res)=>{
-
-        if(err){
-            console.log("error:", err)
-            return result(err,null)
-        }
-        else if(res.affectedRows == 0){
-            return result({kind:"not_found"},null)
-        }
-        else{
-            return result(null,res)
-        }
-    })
-}
-
 Reservation.confirm = (idReservation,result)=>{
     db.con.query("UPDATE Reserva SET confirmado = 1 WHERE idReserva = ? AND ativo = 1", idReservation,(err,res)=>{
         if(err){

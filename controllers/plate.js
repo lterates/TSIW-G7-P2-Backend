@@ -47,6 +47,31 @@ exports.findById = (req, res) => {
 }
 
 
+
+exports.findByRestaurant = (req,res) =>{
+    const idRestaurant = req.params.idRestaurant
+
+    Plate.findByRestaurant(idRestaurant, (err, data) => {
+        if (err) {
+            if(err.kind === "not_found"){
+                res.status(404).send({
+                    "Not Found": `Os pratos não foram encontrados.`
+                }); 
+            }
+            else{
+                res.status(500).send({
+                    message: err.message || "Ocorreu um erro"
+                })
+            }
+            
+        } else {
+            res.status(200).send({"success":[data]})
+        }
+    })
+}
+
+
+
 exports.create = (req, res) => {
 
     //Validar pedido
@@ -58,16 +83,14 @@ exports.create = (req, res) => {
     else {
 
         const name = db.con.escape(req.body.name)
-        const description = db.con.escape(req.body.description)
-        const price = req.body.price
+        const description = db.con.escape(req.body.description)        
         const foto = req.body.foto
         const idRestaurant = req.params.idRestaurant
 
         //Create Plate
         const plate = new Plate({
             name: name,
-            description: description,
-            price: price,
+            description: description,            
             foto: foto,
             idRestaurant: idRestaurant
         })
@@ -146,15 +169,13 @@ exports.deleteAll = (req, res) => {
       else{
 
         const name = db.con.escape(req.body.name)
-        const description = db.con.escape(req.body.description)
-        const price = req.body.price
+        const description = db.con.escape(req.body.description)      
         const foto = req.body.foto
         const idPlate = req.params.idPlate
 
           const plate = new Plate({
               name:name,
-              description: description,
-              price: price,
+              description: description,            
               foto: foto
           })
 
