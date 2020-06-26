@@ -1,84 +1,87 @@
 const Reservation = require("../models/reservation.js")
 const db = require("../config/db.js")
 
-exports.findById = (req,res) => {
+exports.findById = (req, res) => {
 
     const idReservation = req.params.idReservation
 
-    Reservation.findById(idReservation,(err,data)=>{
+    Reservation.findById(idReservation, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `A reserva não foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
 
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 }
 
-exports.findByRestaurant = (req,res) => {
+exports.findByRestaurant = (req, res) => {
 
     const idRestaurant = req.params.idRestaurant
 
-    Reservation.findByRestaurant(idRestaurant,(err,data)=>{
+    Reservation.findByRestaurant(idRestaurant, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhuma reserva foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
 
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 }
 
-exports.findByUser = (req,res) => {
+exports.findByUser = (req, res) => {
 
     const idUser = req.params.idUser
 
-    Reservation.findByUser(idUser,(err,data)=>{
+    Reservation.findByUser(idUser, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhuma reserva foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
 
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 }
 
-exports.create = (req,res) => {
-    if(!req.body){
+exports.create = (req, res) => {
+    if (!req.body) {
         req.status(400).send({
-            message:"Por favor preencha os requisitos"
+            message: "Por favor preencha os requisitos"
         })
-    }else{
+    } else {
         const idClient = req.params.idUser
         const idTable = req.params.idTable
         const time = req.body.time
@@ -86,34 +89,35 @@ exports.create = (req,res) => {
         const n_people = req.body.n_people
 
         const reservation = new Reservation({
-            idClient:idClient,
+            idClient: idClient,
             idTable: idTable,
-            time:time,
-            name:name,
-            n_people:n_people,
+            time: time,
+            name: name,
+            n_people: n_people,
         })
 
-        Reservation.create(reservation,(err,data)=>{
+        Reservation.create(reservation, (err, data) => {
             if (err) {
                 console.log("error catched")
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
-            }
-            else{
+            } else {
                 console.log("Sucesso na criação da reserva")
-                res.status(201).send({ "success": "Reserva Criada!" })
+                res.status(201).send({
+                    "success": "Reserva Criada!"
+                })
             }
         })
     }
 }
 
-exports.update = (req,res) =>{
-    if(!req.body){
+exports.update = (req, res) => {
+    if (!req.body) {
         req.status(400).send({
-            message:"Por favor preencha os requisitos"
+            message: "Por favor preencha os requisitos"
         })
-    }else{
+    } else {
 
         const idReservation = req.params.idReservation
         const time = req.body.time
@@ -121,45 +125,45 @@ exports.update = (req,res) =>{
         const n_people = req.body.n_people
 
         const reservation = new Reservation({
-            time:time,
-            name:name,
-            n_people:n_people,
+            time: time,
+            name: name,
+            n_people: n_people,
         })
 
-        Reservation.update(idReservation,reservation,(err,data)=>{
+        Reservation.update(idReservation, reservation, (err, data) => {
             if (err) {
 
-                if(err.kind === "not_found"){
+                if (err.kind === "not_found") {
                     res.status(404).send({
                         "Not Found": `Nenhuma reserva foi encontrada`
-                    }); 
-                }
-                else{
+                    });
+                } else {
                     res.status(500).send({
                         message: err.message || "Ocorreu um erro"
                     })
                 }
-    
+
             } else {
-                res.status(200).send({"success":"A alteração foi atualizada com sucesso!"})
+                res.status(200).send({
+                    "success": "A alteração foi atualizada com sucesso!"
+                })
             }
         })
     }
 }
 
-exports.confirm = (req,res) =>{
+exports.confirm = (req, res) => {
 
     const idReservation = req.params.idReservation
 
-    Reservation.confirm(idReservation,(err,data)=>{
+    Reservation.confirm(idReservation, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhuma reserva foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
@@ -167,24 +171,25 @@ exports.confirm = (req,res) =>{
 
         } else {
 
-            res.status(200).send({"Success" : "A reserva foi confirmada"})
+            res.status(200).send({
+                "Success": "A reserva foi confirmada"
+            })
         }
     })
 }
 
-exports.deleteById = (req,res) =>{
+exports.deleteById = (req, res) => {
 
     const idReservation = req.params.idReservation
 
-    Reservation.deleteById(idReservation,(err,data)=>{
+    Reservation.deleteById(idReservation, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhuma reserva foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
@@ -196,19 +201,18 @@ exports.deleteById = (req,res) =>{
     })
 }
 
-exports.deleteByRestaurant = (req,res) =>{
+exports.deleteByRestaurant = (req, res) => {
 
     const idRestaurant = req.params.idRestaurant
 
-    Reservation.deleteByRestaurant(idRestaurant,(err,data)=>{
+    Reservation.deleteByRestaurant(idRestaurant, (err, data) => {
         if (err) {
 
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhuma reserva foi encontrada`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
