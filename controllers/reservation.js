@@ -155,8 +155,9 @@ exports.update = (req, res) => {
 exports.confirm = (req, res) => {
 
     const idReservation = req.params.idReservation
+    const status = req.body.status
 
-    Reservation.confirm(idReservation, (err, data) => {
+    Reservation.confirm(status,idReservation,(err,data)=>{
         if (err) {
 
             if (err.kind === "not_found") {

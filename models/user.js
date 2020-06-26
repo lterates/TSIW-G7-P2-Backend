@@ -5,12 +5,12 @@ const User = function (user){
     this.email = user.email
     this.contacto = user.contact
     this.password = user.password
-    this.userType = user.userType
-    this.ativo = user.active
+    this.administrador = user.admin
+    this.aprovado = user.aproved
 }
 
 User.findById = (idUser,result) =>{
-    db.con.query("SELECT username, email, contacto, foto, password,userType,idRestaurante FROM User WHERE idUser = ? AND ativo = 1",
+    db.con.query("SELECT username, email, contacto, password,administrador, idRestaurante FROM User WHERE idUser = ? AND aprovado = 1",
     idUser,(err,res)=>{
         if(err){
             console.log("Error:", err)
@@ -25,8 +25,9 @@ User.findById = (idUser,result) =>{
     })
 }
 
+
 User.findAll = (result) =>{
-    db.con.query("SELECT idUser, username,email,contacto,foto,password,dieta,userType,idRestaurante FROM User WHERE ativo = 1",
+    db.con.query("SELECT idUser, username,email,contacto,avatar,password,administrador,idRestaurante FROM User WHERE aprovado = 1",
     (err,res)=>{
         if(err){
             console.log("Error:", err)
@@ -70,7 +71,7 @@ User.signUp = (newUser,result)=>{
 }
 
 User.confirm = (idUser,result)=>{
-    db.con.query("UPDATE User SET ativo = 1 WHERE idUser = ?",idUser,(err,res)=>{
+    db.con.query("UPDATE User SET aprovado = 1 WHERE idUser = ?",idUser,(err,res)=>{
         if(err){
             console.log("error:", err)
             return result(err,null)
@@ -82,5 +83,6 @@ User.confirm = (idUser,result)=>{
         }
     })
 }
+
 
 module.exports = User

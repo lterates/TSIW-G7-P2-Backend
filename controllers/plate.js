@@ -5,18 +5,19 @@ exports.getAll = (req, res) => {
     Plate.getAll((err, data) => {
         //If something goes wrong getting the data from the database: 
         if (err) {
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Nenhum prato foi encontrado.`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 
@@ -29,43 +30,45 @@ exports.findById = (req, res) => {
 
     Plate.findById(idPlate, (err, data) => {
         if (err) {
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `O prato não foi encontrado.`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
-            
+
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 }
 
 
 
-exports.findByRestaurant = (req,res) =>{
+exports.findByRestaurant = (req, res) => {
     const idRestaurant = req.params.idRestaurant
 
     Plate.findByRestaurant(idRestaurant, (err, data) => {
         if (err) {
-            if(err.kind === "not_found"){
+            if (err.kind === "not_found") {
                 res.status(404).send({
                     "Not Found": `Os pratos não foram encontrados.`
-                }); 
-            }
-            else{
+                });
+            } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
             }
-            
+
         } else {
-            res.status(200).send({"success":[data]})
+            res.status(200).send({
+                "success": [data]
+            })
         }
     })
 }
@@ -79,18 +82,17 @@ exports.create = (req, res) => {
         res.status(400).send({
             message: "Por favor preencha os requisitos"
         })
-    }
-    else {
+    } else {
 
         const name = db.con.escape(req.body.name)
-        const description = db.con.escape(req.body.description)        
+        const description = db.con.escape(req.body.description)
         const foto = req.body.foto
         const idRestaurant = req.params.idRestaurant
 
         //Create Plate
         const plate = new Plate({
             name: name,
-            description: description,            
+            description: description,
             foto: foto,
             idRestaurant: idRestaurant
         })
@@ -102,12 +104,19 @@ exports.create = (req, res) => {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
                 })
+            } else {Plate.findById((err,data)=>{
+                if (err) {
+                    console.log("error catched")
+                    res.status(500).send({
+                        message: err.message || "Ocorreu um erro"
+                    })
+                }else{
+                    console.log("Sucesso na criação do prato")
+                    res.status(201).send({ "success": data })
+                }
+            })
             }
-            else{
-                console.log("Sucesso na criação do prato")
-                res.status(201).send({ "success": "Prato criado" })
-            }
-    
+
 
         })
     }
@@ -128,9 +137,9 @@ exports.delete = (req, res) => {
                     message: err.message || "Ocorreu um erro"
                 });
             }
-        }else{
-             res.status(204).send();
-        } 
+        } else {
+            res.status(204).send();
+        }
     });
 };
 
@@ -138,62 +147,59 @@ exports.deleteAll = (req, res) => {
 
     const idRestaurant = req.params.idRestaurant
 
-    Plate.deleteAll(req.params.idRestaurant,(err, data) => {
-      if (err){
-          if(err.kind ==="not_found"){
-            res.status(404).send({
-                "Not Found": `O restaurante não foi encontrado.`
-            }); 
-          }
-          else{
-            res.status(500).send({
-                message:
-                err.message || "Ocorreu um erro"
-            });
-          }
-      }
-       
-      else{
-        console.log(data)
-        res.status(204).send();
-      }
+    Plate.deleteAll(req.params.idRestaurant, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    "Not Found": `O restaurante não foi encontrado.`
+                });
+            } else {
+                res.status(500).send({
+                    message: err.message || "Ocorreu um erro"
+                });
+            }
+        } else {
+            console.log(data)
+            res.status(204).send();
+        }
     });
-  }
+}
 
-  exports.update=(req,res) =>{
-      if(!req.body){
-          res.status(400).send({
-              mesage:"Por favor preencha os requisitos"
-          })
-      }
-      else{
+exports.update = (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            mesage: "Por favor preencha os requisitos"
+        })
+    } else {
 
         const name = db.con.escape(req.body.name)
-        const description = db.con.escape(req.body.description)      
+        const description = db.con.escape(req.body.description)
         const foto = req.body.foto
         const idPlate = req.params.idPlate
 
-          const plate = new Plate({
-              name:name,
-              description: description,            
-              foto: foto
-          })
+        const plate = new Plate({
+            name: name,
+            description: description,
+            foto: foto
+        })
 
-          Plate.update(idPlate,plate,(err,data)=>{
-            if(err){
-                if(err.kind ==="not_found"){
-                    res.status(404).send({"Not found": "O prato não foi encontrado"})
-                }
-                else{
+        Plate.update(idPlate, plate, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        "Not found": "O prato não foi encontrado"
+                    })
+                } else {
                     res.status(500).send({
-                        message:err.message || "Ocorreu um erro"
+                        message: err.message || "Ocorreu um erro"
                     })
                 }
-              
+
+            } else {
+                res.status(200).send({
+                    "success": "Os dados foram atualizados com sucesso"
+                })
             }
-            else{
-                res.status(200).send({"success":"Os dados foram atualizados com sucesso"})
-            }
-          })
-      }
-  }
+        })
+    }
+}

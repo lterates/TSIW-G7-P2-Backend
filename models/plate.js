@@ -57,6 +57,31 @@ Plate.findById = (plateId, result) => {
 
 }
 
+Plate.findLastId = (result) => {
+
+    //Send prepared command to Database
+    db.con.query("SELECT max(idPlate) as idPlate FROM Prato ",(err, res) => {
+
+        // If there's any problem with the data retrieval 
+        if (err) {
+            console.log("error:", err)
+            result(err, null)
+            return
+        }
+        // If there's the found plate
+        else if (res[0]) {
+            result(null, res[0])
+            return
+        }
+        // If there's no plate found
+        else {
+            result({ kind: "not_found" }, null)
+            return
+        }
+    })
+
+}
+
 Plate.findByRestaurant =(idRestaurant,result) =>{
     db.con.query("SELECT * FROM Prato WHERE idRestaurante = ? AND ativo = 1", idRestaurant, (err, res) => {
 

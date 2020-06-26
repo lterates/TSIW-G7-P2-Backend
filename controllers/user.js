@@ -1,4 +1,5 @@
 const User = require('../models/user.js');
+const Restaurant = require('../models/restaurant.js')
 const bcrypt = require("bcrypt");
 var config = require('../config');
 var jwt = require('jsonwebtoken');
@@ -131,7 +132,7 @@ exports.signUp = (req, res) => {
                             password: hash,
                             idRestaurant: idRestaurant,
                             userType: userType,
-                            active: 0
+                            aproved: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -195,7 +196,7 @@ exports.signUp = (req, res) => {
                             contact: contact,
                             password: hash,
                             userType: userType,
-                            active: 0
+                            aproved: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -309,10 +310,49 @@ exports.confirm = (req, res) => {
                     })
                 }
             } else {
+                User.findById(data.id, (err, result) => {
+                    if (err) {
+                        if (err.kind === "not_found") {
+                            res.status(404).send({
+                                "not found": "O utilizador não foi encontrado"
+                            })
+                        } else {
+                            res.status(500).send({
+                                message: err.message || "Ocorreu um erro"
+                            })
+                        }
+                    } else {
 
-                res.status(200).send({
-                    "success": "Email foi verificado"
+                        let username = result[0].username
+                        let idRestaurant = result[0].idRestaurante
+
+                        if (idRestaurant != null) {
+                            Restaurant.confirm(result[0].idRestaurante, (err, result) => {
+                                if (err) {
+                                    if (err.kind === "not_found") {
+                                        res.status(404).send({
+                                            "not found": "O utilizador não foi encontrado"
+                                        })
+                                    } else {
+                                        res.status(500).send({
+                                            message: err.message || "Ocorreu um erro"
+                                        })
+                                    }
+                                } else {
+                                    res.status(200).render('badjoras.html', {
+                                        name: username
+                                    })
+                                }
+                            })
+                        } else {
+                            res.status(200).render('badjoras.html', {
+                                name: username
+                            })
+                        }
+
+                    }
                 })
+
             }
         })
 
