@@ -3,7 +3,7 @@ const db = require("../config/db.js")
 const User = function (user) {
     this.username = user.username
     this.email = user.email
-    this.contacto = user.contact
+    this.num_tel = user.num_tel
     this.password = user.password
     this.administrador = user.admin
     this.aprovado = user.aproved
@@ -62,7 +62,7 @@ User.getLastId = (result) => {
 
 }
 User.signUp = (newUser, result) => {
-    db.con.query("INSERT INTO User SET ?", newUser, (err, res) => {
+    db.con.query("INSERT INTO user SET ?", newUser, (err, res) => {
         if (err) {
             console.log("error:", err)
             return result(err, null)

@@ -219,7 +219,7 @@ exports.signUp = (req, res) => {
                             */
                             else {
 
-                                    (email)
+                                sendSignUpMail(email)
                                 User.getLastId((err, data) => {
                                     if (err) {
 

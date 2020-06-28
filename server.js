@@ -13,7 +13,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+app.set('view engine', 'html')
+
+
 module.exports = app;
+  
 require("./routes/restaurant.js")(app)
 require("./routes/plate.js")(app)
 require("./routes/reservation")(app)
@@ -24,7 +28,7 @@ require("./routes/user.js")(app)
 // simple route
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcome to your application."
+    message: "Welcome to Is2Go."
   });
 });
 
