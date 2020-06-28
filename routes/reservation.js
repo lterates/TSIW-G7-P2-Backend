@@ -1,17 +1,17 @@
 module.exports = app => {
     const reservation = require("../controllers/reservation.js")
 
-    app.get('/reservations/:idReservation', reservation.findById)
+    app.get('/reservations/:id_reservation', reservation.findById)
 
-    app.get('/restaurants/:idRestaurant/reservations', reservation.findByRestaurant)
+    app.get('/restaurants/:id_restaurante/reservations', reservation.findByRestaurant)
 
     app.get('/users/:idUser/reservations', reservation.findByUser)
 
-    app.post('/tables/:idTable/users/:idUser/reservations', reservation.create)
+    app.post('/tables/:idTable/users/:id_utilizador/reservations', reservation.create)
 
-    app.put('/reservations/:idReservation/confirm', reservation.confirm)
+    app.put('/reservations/:id_reservation/confirm', reservation.confirm)
 
-    app.delete('/reservations/:idReservation', reservation.deleteById)
+    app.delete('/reservations/:id_reservation', reservation.deleteById)
 
-    app.delete('/restaurants/:idRestaurant/reservations', reservation.deleteByRestaurant)
+    app.delete('/restaurants/:id_restaurante/reservations', reservation.deleteByRestaurant)
 }

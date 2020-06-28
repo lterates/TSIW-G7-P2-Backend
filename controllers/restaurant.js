@@ -58,16 +58,16 @@ exports.create = (req, res) => {
     const foto = req.body.foto;
     const address = req.body.address
     const zipCode = req.body.zipCode;
-    
 
-    
+
+
     if (!req.body) {
         res.status(400).send({
             message: "Content Cannot be empty!"
         })
     } else {
         //Create Restaurant
-        const restaurant = new Restaurant({          
+        const restaurant = new Restaurant({
             name: name,
             description: description,
             foto: foto,
@@ -90,14 +90,13 @@ exports.create = (req, res) => {
                     if (err) {
                         if (err.kind === "not_found") {
                             id_restaurante = 0
-                        } else {                            
+                        } else {
                             console.log("Erro: ", err.emssage)
                             res.status(500).send({
                                 message: err.message || "Ocorreu um erro"
                             })
                         }
-                    } else {
-                        console.log("aa")
+                    } else {                        
                         const lastIdRestaurant = data.id_restaurante
 
                         res.status(201).send({
