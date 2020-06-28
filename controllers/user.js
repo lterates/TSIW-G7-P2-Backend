@@ -116,11 +116,11 @@ exports.signUp = (req, res) => {
             message: "Content cannot be empty"
         })
     } else {
-        const username = db.con.escape(req.body.username)
+        const username = req.body.username
         const email = req.body.email
-        const contact = req.body.contact
+        const num_tel = req.body.num_tel
         const password = req.body.password
-        const administrador = db.con.escape(req.body.administrador)
+        const administrador = req.body.administrador
 
         User.findAll((err, data) => {
             if (err) {
@@ -129,10 +129,11 @@ exports.signUp = (req, res) => {
                         const user = new User({
                             username: username,
                             email: email,
-                            contact: contact,
-                            password: hash,                            
+                            num_tel: num_tel,
+                            password: hash,
                             administrador: administrador,
-                            active: 0
+                            aprovado: 0,
+                            ativo: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -193,10 +194,11 @@ exports.signUp = (req, res) => {
                         const user = new User({
                             username: username,
                             email: email,
-                            contact: contact,
+                            num_tel: num_tel,
                             password: hash,
                             administrador: administrador,
-                            active: 0
+                            aprovado: 0,
+                            ativo: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -217,7 +219,7 @@ exports.signUp = (req, res) => {
                             */
                             else {
 
-                                sendSignUpMail(email)
+                                    (email)
                                 User.getLastId((err, data) => {
                                     if (err) {
 
@@ -324,10 +326,10 @@ exports.confirm = (req, res) => {
                     } else {
 
                         let username = result[0].username
-                        let idRestaurant = result[0].idRestaurante
+                        let id_restaurante = result[0].id_restaurante
 
-                        if (idRestaurant != null) {
-                            Restaurant.confirm(result[0].idRestaurante, (err, result) => {
+                        if (id_restaurante != null) {
+                            Restaurant.confirm(result[0].id_restaurante, (err, result) => {
                                 if (err) {
                                     if (err.kind === "not_found") {
                                         res.status(404).send({
@@ -366,7 +368,7 @@ exports.confirm = (req, res) => {
 
 exports.login = (req, res) => {
 
-    const username = db.con.escape(req.body.username)
+    const username = req.body.username
     const password = req.body.password
 
 
@@ -387,28 +389,27 @@ exports.login = (req, res) => {
             let id_utilizadorData = 0
             let errorMessage = ""
             let administradorData = ""
-            let usernameData = ""           
+            let usernameData = ""
             let emaiData = ""
-            let contactData = 0
-            let idRestaurantData = 0
+            let num_telData = 0
+            let id_restauranteData = 0
             data.find((data) => {
 
                 if (data.username == username && bcrypt.compareSync(password, data.password)) {
 
                     id_utilizadorData = data.id_utilizador
                     administradorData = data.administrador
-                    usernameData = data.username                  
+                    usernameData = data.username
                     emaiData = data.email
-                    contactData = data.contacto
+                    num_telData = data.num_tel
                     fotoData = data.foto
-                    idRestaurantData = data.idRestaurante
+                    id_restauranteData = data.id_restaurante
 
 
                     found = true
 
                 }
             })
-
 
             if (found == true) {
                 var token = jwt.sign({
@@ -417,15 +418,16 @@ exports.login = (req, res) => {
                     expiresIn: 86400 // expires in 24 hours
                 });
 
+
                 res.status(201).send({
                     auth: true,
                     token: token,
                     id_utilizador: id_utilizadorData,
-                    username: usernameData,                    
+                    username: usernameData,
                     email: emaiData,
                     foto: fotoData,
-                    contact: contactData,
-                    idRestaurant: idRestaurantData,
+                    num_tel: num_telData,
+                    id_restaurante: id_restauranteData,
                     administrador: administradorData
                 });
             } else {
