@@ -9,9 +9,9 @@ const db = require("../config/db.js")
 
 exports.findById = (req, res) => {
 
-    const idUser = req.params.idUser
+    const id_utilizador = req.params.id_utilizador
 
-    User.findById(idUser, (err, data) => {
+    User.findById(id_utilizador, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
@@ -24,14 +24,15 @@ exports.findById = (req, res) => {
             }
         } else {
             res.status(200).send({
-                "success": [data]
+                "success": data
             })
         }
     })
 }
 
 exports.findAll = (req, res) => {
-    User.findById((err, data) => {
+
+    User.findAll((err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
@@ -44,7 +45,7 @@ exports.findAll = (req, res) => {
             }
         } else {
             res.status(200).send({
-                "success": [data]
+                "success": data
             })
         }
     })
@@ -52,12 +53,12 @@ exports.findAll = (req, res) => {
 
 function sendSignUpMail(res, email) {
 
-    let idUser = 0
+    let id_utilizador = 0
 
     User.getLastId((err, data) => {
         if (err) {
             if (err.kind === "not_found") {
-                idUser = 0
+                id_utilizador = 0
             } else {
                 res.status(500).send({
                     message: err.message || "Ocorreu um erro"
@@ -65,11 +66,11 @@ function sendSignUpMail(res, email) {
             }
         } else {
 
-            idUser = data[0].idUser
-            console.log(idUser)
+            id_utilizador = data[0].id_utilizador
+            console.log(id_utilizador)
             // If no errors or conflicts are encountered:
             var token = jwt.sign({
-                id: idUser
+                id: id_utilizador
             }, config.secret, {
                 expiresIn: new Date().getTime() + 10 * 60 * 1000 // expires in 10 min
             });
@@ -119,7 +120,7 @@ exports.signUp = (req, res) => {
         const email = req.body.email
         const contact = req.body.contact
         const password = req.body.password
-        const userType = db.con.escape(req.body.userType)
+        const administrador = db.con.escape(req.body.administrador)
 
         User.findAll((err, data) => {
             if (err) {
@@ -129,10 +130,9 @@ exports.signUp = (req, res) => {
                             username: username,
                             email: email,
                             contact: contact,
-                            password: hash,
-                            idRestaurant: idRestaurant,
-                            userType: userType,
-                            aproved: 0
+                            password: hash,                            
+                            administrador: administrador,
+                            active: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -146,14 +146,14 @@ exports.signUp = (req, res) => {
                                     if (err) {
 
                                         if (err.kind === "not_found") {
-                                            idUser = 0
+                                            id_utilizador = 0
                                         } else {
                                             console.log("Erro: ", err.message)
                                         }
 
                                     } else {
 
-                                        const lastUserId = data[0].idUser
+                                        const lastUserId = data[0].id_utilizador
 
                                         return res.status(201).send({
                                             "success": lastUserId
@@ -195,8 +195,8 @@ exports.signUp = (req, res) => {
                             email: email,
                             contact: contact,
                             password: hash,
-                            userType: userType,
-                            aproved: 0
+                            administrador: administrador,
+                            active: 0
                         })
 
                         User.signUp(user, (err, data) => {
@@ -209,7 +209,7 @@ exports.signUp = (req, res) => {
                             else if (!err){
                                
                                 // create a token
-                                var token = jwt.sign({id:data[0].idUser}, config.secret, {
+                                var token = jwt.sign({id:data[0].id_utilizador}, config.secret, {
                                     expiresIn: 86400 // expires in 24 hours
                                 });
                                 return res.status(200).send({ auth: true, token: token });
@@ -222,14 +222,14 @@ exports.signUp = (req, res) => {
                                     if (err) {
 
                                         if (err.kind === "not_found") {
-                                            idUser = 0
+                                            id_utilizador = 0
                                         } else {
                                             console.log("Erro: ", err.message)
                                         }
 
                                     } else {
 
-                                        const lastUserId = data[0].idUser
+                                        const lastUserId = data[0].id_utilizador
 
                                         return res.status(201).send({
                                             "success": lastUserId
@@ -277,7 +277,7 @@ exports.verifyToken = (req, res, next) => {
             });
 
         // if everything good, save to request for use in other routes
-        req.idUser = decoded.id;
+        req.id_utilizador = decoded.id;
         next();
     });
 }
@@ -384,11 +384,10 @@ exports.login = (req, res) => {
         } else {
 
             let found = false
-            let idUserData = 0
+            let id_utilizadorData = 0
             let errorMessage = ""
-            let userTypeData = ""
-            let usernameData = ""
-            let dietData = ""
+            let administradorData = ""
+            let usernameData = ""           
             let emaiData = ""
             let contactData = 0
             let idRestaurantData = 0
@@ -396,15 +395,13 @@ exports.login = (req, res) => {
 
                 if (data.username == username && bcrypt.compareSync(password, data.password)) {
 
-                    idUserData = data.idUser
-                    userTypeData = data.userType
-                    usernameData = data.username
-                    dietData = data.dieta
+                    id_utilizadorData = data.id_utilizador
+                    administradorData = data.administrador
+                    usernameData = data.username                  
                     emaiData = data.email
                     contactData = data.contacto
-                    avatarData = data.avatar
+                    fotoData = data.foto
                     idRestaurantData = data.idRestaurante
-
 
 
                     found = true
@@ -415,7 +412,7 @@ exports.login = (req, res) => {
 
             if (found == true) {
                 var token = jwt.sign({
-                    id: data.idUser
+                    id: data.id_utilizador
                 }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
@@ -423,14 +420,13 @@ exports.login = (req, res) => {
                 res.status(201).send({
                     auth: true,
                     token: token,
-                    idUser: idUserData,
-                    username: usernameData,
-                    diet: dietData,
+                    id_utilizador: id_utilizadorData,
+                    username: usernameData,                    
                     email: emaiData,
-                    avatar: avatarData,
+                    foto: fotoData,
                     contact: contactData,
                     idRestaurant: idRestaurantData,
-                    userType: userTypeData
+                    administrador: administradorData
                 });
             } else {
                 res.status(401).send({
