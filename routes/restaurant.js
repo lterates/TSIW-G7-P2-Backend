@@ -4,10 +4,10 @@ module.exports = app => {
 
     app.get('/restaurants', restaurants.getAll)
 
-    app.get('/restaurants/:idRestaurant', restaurants.findById)
+    app.get('/restaurants/:id_restaurante', restaurants.findById)
 
-    app.post('/restaurants', restaurants.create)
+    app.post('/createRestaurants', restaurants.create)
 
-    app.delete('/restaurants/:idRestaurant', restaurants.delete)
+    app.delete('/restaurants/:id_restaurant', restaurants.delete)
 
 }

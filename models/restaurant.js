@@ -3,18 +3,17 @@ const db = require("../config/db.js")
 //Constructor
 const Restaurant = function (restaurant) {
     this.nome = restaurant.name
-    this.descrição = restaurant.description
-    this.coverFoto = restaurant.coverFoto
-    //  this.gps = restaurant.gps
+    this.descricao = restaurant.description
+    this.foto = restaurant.foto
     this.morada = restaurant.address
-    this.Codigo_postal = restaurant.zipCode
+    this.cod_postal = restaurant.zipCode
     this.ativo = restaurant.active
 
 }
 // Gets All restaurants from Database
 Restaurant.getAll = result => {
 
-    db.con.query('SELECT * FROM Restaurante WHERE ativo = 1;', function (err, res) {
+    db.con.query('SELECT * FROM restaurante WHERE ativo = 1;', function (err, res) {
         if (err) {
             console.log(err)
             result(err, null)
@@ -35,37 +34,37 @@ Restaurant.getAll = result => {
 }
 
 // Gets ONE Selected Restaurant from Database
-Restaurant.findById = (restaurantId, result) => {
+Restaurant.findById = (id_restaurante, result) => {
 
     //Send prepared command to Database
-    db.con.query("SELECT * FROM Restaurante WHERE idRestaurante = ? AND ativo = 1", restaurantId, (err, res) => {
+    db.con.query("SELECT * FROM restaurante WHERE id_restaurante = ? AND ativo = 1",
+        id_restaurante, (err, res) => {
+            // If there's any problem with the data retrieval 
+            if (err) {
+                console.log("error:", err)
+                return result(err, null)
 
-        // If there's any problem with the data retrieval 
-        if (err) {
-            console.log("error:", err)
-            return result(err, null)
-
-        }
-        // If there's no restaurant found
-        else if (!res[0]) {
-            return result({
-                kind: "not_found"
-            }, null)
+            }
+            // If there's no restaurant found
+            else if (!res[0]) {
+                return result({
+                    kind: "not_found"
+                }, null)
 
 
-        }
-        // If there's the found Restaurant
-        else {
-            return result(null, res[0])
+            }
+            // If there's the found Restaurant
+            else {
+                return result(null, res[0])
 
-        }
-    })
+            }
+        })
 
 }
 
 Restaurant.getLastId = (result) => {
 
-    db.con.query("SELECT Max(idRestaurante) as idRestaurante FROM Restaurante", (err, res) => {
+    db.con.query("SELECT Max(id_restaurante) as id_restaurante FROM restaurante", (err, res) => {
         if (err) {
             console.log("error:", err)
             return result(err, null)
@@ -82,8 +81,8 @@ Restaurant.getLastId = (result) => {
 
 
 Restaurant.create = (newRestaurant, result) => {
-    //Preparing to add new restaurant Database
-    db.con.query("INSERT INTO Restaurante SET ?", newRestaurant, (err, res) => {
+    //Preparing to add new restaurant to the Database
+    db.con.query("INSERT INTO restaurante SET ?", newRestaurant, (err, res) => {
         if (err) {
             console.log("error:", err)
             return result(err, null)
@@ -99,7 +98,7 @@ Restaurant.create = (newRestaurant, result) => {
 
 
 Restaurant.confirm = (id, result) => {
-    db.con.query('UPDATE Restaurant SET ativo = 1 WHERE idRestaurante = ? and ativo = 0', id, (err, res) => {
+    db.con.query('UPDATE Restaurant SET ativo = 1 WHERE id_restaurante = ? and ativo = 0', id, (err, res) => {
         if (err) {
             console.log("error:", err);
             return result(err, null)
@@ -117,7 +116,7 @@ Restaurant.confirm = (id, result) => {
 
 Restaurant.delete = (id, result) => {
 
-    db.con.query("UPDATE Restaurante SET ativo = 0 WHERE idRestaurante = ? AND ativo = 1", id, (err, res) => {
+    db.con.query("UPDATE Restaurante SET ativo = 0 WHERE id_restaurante = ? AND ativo = 1", id, (err, res) => {
         if (err) {
             console.log("error:", err);
             return result(err, null)

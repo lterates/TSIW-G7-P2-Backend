@@ -28,9 +28,9 @@ exports.getAll = (req, res) => {
 
 exports.findById = (req, res) => {
 
-    const idRestaurant = req.params.idRestaurant
+    const id_restaurante = req.params.id_restaurante
 
-    Restaurant.findById(idRestaurant, (err, data) => {
+    Restaurant.findById(id_restaurante, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
@@ -53,26 +53,25 @@ exports.findById = (req, res) => {
 
 exports.create = (req, res) => {
 
-    const name = db.con.escape(req.body.name);
-    const description = db.con.escape(req.body.description);
-    const foto = db.con.escape(req.body.foto);
-    // const address = db.con.escape(req.body.address);
-    // const gps = db.con.escape(req.body.gps);
+    const name = req.body.name;
+    const description = req.body.description;
+    const foto = req.body.foto;
+    const address = req.body.address
     const zipCode = req.body.zipCode;
+    
 
-    //Validar pedido
+    
     if (!req.body) {
         res.status(400).send({
             message: "Content Cannot be empty!"
         })
     } else {
         //Create Restaurant
-        const restaurant = new Restaurant({
+        const restaurant = new Restaurant({          
             name: name,
             description: description,
             foto: foto,
-            // address: gpsAddress,
-            // address: gps,
+            address: address,
             zipCode: zipCode,
             active: 0
         })
@@ -90,15 +89,16 @@ exports.create = (req, res) => {
                 Restaurant.getLastId((err, data) => {
                     if (err) {
                         if (err.kind === "not_found") {
-                            idUser = 0
-                        } else {
-                            console.log("Erro: ", err.message)
+                            id_restaurante = 0
+                        } else {                            
+                            console.log("Erro: ", err.emssage)
                             res.status(500).send({
                                 message: err.message || "Ocorreu um erro"
                             })
                         }
                     } else {
-                        const lastIdRestaurant = data.idRestaurante
+                        console.log("aa")
+                        const lastIdRestaurant = data.id_restaurante
 
                         res.status(201).send({
                             "success": lastIdRestaurant
@@ -114,9 +114,9 @@ exports.create = (req, res) => {
 }
 
 exports.confirm = (req, res) => {
-    const idRestaurant = req.params.idRestaurant
+    const id_restaurante = req.params.id_restaurante
 
-    Restaurant.confirm(idRestaurant, (err, data) => {
+    Restaurant.confirm(id_restaurante, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
@@ -138,9 +138,9 @@ exports.confirm = (req, res) => {
 
 exports.delete = (req, res) => {
 
-    const idRestaurant = req.params.idRestaurant
+    const id_restaurante = req.params.id_restaurante
 
-    Restaurant.delete(idRestaurant, (err, data) => {
+    Restaurant.delete(id_restaurante, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({

@@ -7,6 +7,6 @@ module.exports = {
         port: "3306",
         user: "root",
         password: "toma1502",
-        database: `is2go`
+        database: `esmad_is2go`
     })
 }
