@@ -112,46 +112,6 @@ exports.create = (req, res) => {
     }
 }
 
-exports.update = (req, res) => {
-    if (!req.body) {
-        req.status(400).send({
-            message: "Por favor preencha os requisitos"
-        })
-    } else {
-
-        const idReservation = req.params.idReservation
-        const time = req.body.time
-        const name = db.con.escape(req.body.name)
-        const n_people = req.body.n_people
-
-        const reservation = new Reservation({
-            time: time,
-            name: name,
-            n_people: n_people,
-        })
-
-        Reservation.update(idReservation, reservation, (err, data) => {
-            if (err) {
-
-                if (err.kind === "not_found") {
-                    res.status(404).send({
-                        "Not Found": `Nenhuma reserva foi encontrada`
-                    });
-                } else {
-                    res.status(500).send({
-                        message: err.message || "Ocorreu um erro"
-                    })
-                }
-
-            } else {
-                res.status(200).send({
-                    "success": "A alteração foi atualizada com sucesso!"
-                })
-            }
-        })
-    }
-}
-
 exports.confirm = (req, res) => {
 
     const idReservation = req.params.idReservation
