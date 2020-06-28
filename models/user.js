@@ -11,7 +11,7 @@ const User = function (user) {
 }
 
 User.findById = (id_utilizador, result) => {
-    db.con.query("SELECT username, email, foto, administrador FROM user WHERE id_utilizador = ? AND ativo = 1",
+    db.con.query("SELECT username, email, administrador FROM user WHERE id_utilizador = ? AND ativo = 1",
         id_utilizador, (err, res) => {
             if (err) {
                 console.log("Error:", err)
@@ -28,7 +28,7 @@ User.findById = (id_utilizador, result) => {
 
 
 User.findAll = (result) => {
-    db.con.query("SELECT id_utilizador, username, email, foto, password, administrador FROM user WHERE ativo = 1",
+    db.con.query("SELECT id_utilizador, username, email, password, administrador FROM user WHERE ativo = 1",
         (err, res) => {
             if (err) {
                 console.log("Error:", err)
@@ -43,7 +43,7 @@ User.findAll = (result) => {
         })
 }
 User.getLastId = (result) => {
-    db.con.query("SELECT MAX(id_utilizador) as id_utilizador FROM User", (err, res) => {
+    db.con.query("SELECT MAX(id_utilizador) as id_utilizador FROM user", (err, res) => {
 
         if (err) {
             console.log("error:", err)
@@ -75,7 +75,7 @@ User.signUp = (newUser, result) => {
 }
 
 User.confirm = (id_utilizador, result) => {
-    db.con.query("UPDATE User SET aprovado = 1 WHERE id_utilizador = ?", id_utilizador, (err, res) => {
+    db.con.query("UPDATE user SET aprovado = 1 WHERE id_utilizador = ?", id_utilizador, (err, res) => {
         if (err) {
             console.log("error:", err)
             return result(err, null)
@@ -89,6 +89,5 @@ User.confirm = (id_utilizador, result) => {
         }
     })
 }
-
 
 module.exports = User
